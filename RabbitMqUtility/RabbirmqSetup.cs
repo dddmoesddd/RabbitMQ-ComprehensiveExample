@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using RabbitMqUtility.Settings;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace RabbitMqUtility
         IConfigurationRoot _configurationRoot;
         IModel _channel;
         IConnection _connection;
-
+        EventingBasicConsumer EventingBasicConsumer;
 
         public RabbirmqSetup(string settingFile,string section)
         {
@@ -96,6 +97,37 @@ namespace RabbitMqUtility
 
             _connection.Close();
             return this;
+        }
+
+        public EventingBasicConsumer GetConsumer()
+        {
+
+             return new EventingBasicConsumer(_channel);
+         
+        }
+
+        public string BasicConsume(string queue, bool autoAcke,IBasicConsumer consumer)
+        {
+
+            var tag = _channel.BasicConsume(queue, autoAcke, consumer);
+            return tag;
+
+        }
+
+        public void  BasicNack(ulong tag, bool multiple, bool requeque)
+        {
+
+             _channel.BasicNack(tag, multiple, requeque);
+         
+
+        }
+
+        public void BasicAck(ulong tag, bool multiple)
+        {
+
+            _channel.BasicAck(tag, multiple);
+
+
         }
     }
 }
