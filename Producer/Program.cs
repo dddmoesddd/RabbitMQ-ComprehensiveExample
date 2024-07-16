@@ -1,6 +1,8 @@
-﻿using Producer;
+﻿
 //fanout
-var setup = new RabbitmqProducer("RabbitConfiguration.json")
+using RabbitMqUtility;
+
+var setup = new RabbirmqSetup("RabbitConfiguration.json", "RabbitMqConfigs:factory")
     .CreateConnection()
     .ExchangeDeclare("ex1", "fanout", true, false, null)
     .QueueDeclare("q1", true, false, false, null)
@@ -13,3 +15,5 @@ Console.ReadKey();
 
 setup.QueueDelete("q1").ExchangeDelete("ex1");
 setup.ChannelClose().ConnectionClose();
+
+//docker run --rm -it --hostname my-rabbit -p 15672:15672 - p 5672:5672 rabbitmq: 3 - management
