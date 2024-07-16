@@ -1,6 +1,6 @@
 ﻿using Producer;
-
-var setup = new RabbitmqSetup("RabbitMqConfigs.json")
+//fanout
+var setup = new RabbitmqProducer("RabbitMqConfigs.json")
     .CreateConnection()
     .ExchangeDeclare("ex.fanout", "fanout", true, false, null)
     .QueueDeclare("q1", true, false, false, null)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Producer
 {
-    public class RabbitmqSetup
+    public class RabbitmqProducer
     {
         RabbitMqSettings _rabbitMqSettings;
         IConfigurationRoot _configurationRoot;
@@ -13,19 +13,19 @@ namespace Producer
         IConnection _connection;
 
 
-        public RabbitmqSetup(string settingFile)
+        public RabbitmqProducer(string settingFile)
         {
 
             _configurationRoot = new ConfigurationBuilder()
-.SetBasePath(Directory.GetCurrentDirectory())
-// custom config file
-.AddJsonFile(settingFile, optional: false, reloadOnChange: false)
-.Build();
+           .SetBasePath(Directory.GetCurrentDirectory())
+            // custom config file
+            .AddJsonFile(settingFile, optional: false, reloadOnChange: false)
+            .Build();
 
             _rabbitMqSettings = _configurationRoot.GetSection("RabbitMqConfigs:factory").Get<RabbitMqSettings>();
 
         }
-        public RabbitmqSetup CreateConnection()
+        public RabbitmqProducer CreateConnection()
         {
 
             ConnectionFactory factory = new ConnectionFactory();
@@ -42,31 +42,59 @@ namespace Producer
 
         }
 
-        public RabbitmqSetup ExchangeDeclare(string name, string type, bool durable, bool autoDelete, IDictionary<string, object> args)
+        public RabbitmqProducer ExchangeDeclare(string name, string type, bool durable, bool autoDelete, IDictionary<string, object> args)
         {
-            _channel.ExchangeDeclare(name ,type, durable, autoDelete, args);
+            _channel.ExchangeDeclare(name, type, durable, autoDelete, args);
             return this;
 
         }
 
-        public RabbitmqSetup QueueDeclare(string name, bool durable, bool exclusive, bool autodelete, IDictionary<string, object> args)
+        public RabbitmqProducer QueueDeclare(string name, bool durable, bool exclusive, bool autodelete, IDictionary<string, object> args)
         {
             _channel.QueueDeclare(name, durable, exclusive, autodelete, args);
             return this;
 
         }
 
-        public RabbitmqSetup QueueBind(string queue, string exchange, string routingKey)
+        public RabbitmqProducer QueueBind(string queue, string exchange, string routingKey)
         {
             _channel.QueueBind(queue, exchange, routingKey);
             return this;
 
         }
-        public RabbitmqSetup Publish(string exchange, string routingKey, IBasicProperties basicProperties, string message)
+        public RabbitmqProducer Publish(string exchange, string routingKey, IBasicProperties basicProperties, string message)
         {
-        _channel.BasicPublish(exchange, routingKey, basicProperties, Encoding.UTF8.GetBytes(message));
+            _channel.BasicPublish(exchange, routingKey, basicProperties, Encoding.UTF8.GetBytes(message));
             return this;
 
+        }
+
+        public RabbitmqProducer QueueDelete(string queueName)
+        {
+
+            _channel.QueueDelete(queueName);
+            return this;
+        }
+
+        public RabbitmqProducer ExchangeDelete(string exchangeName)
+        {
+
+            _channel.ExchangeDelete(exchangeName);
+            return this;
+        }
+
+        public RabbitmqProducer ChannelClose(string exchangeName)
+        {
+
+            _channel.Close();
+            return this;
+        }
+
+        public RabbitmqProducer ConnectionClose(string exchangeName)
+        {
+
+            _connection.Close();
+            return this;
         }
     }
 }
