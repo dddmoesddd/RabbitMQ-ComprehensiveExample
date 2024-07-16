@@ -1,0 +1,12 @@
+{
+  "RabbitMqConfigs": {
+    "factory": {
+      "HostName": "localhost",
+      "VirtualHost": "/",
+      "Port": "5672",
+      "UserName": "guest",
+      "Password": "guest"
+    }
+  }
+
+}
