@@ -83,14 +83,14 @@ namespace Producer
             return this;
         }
 
-        public RabbitmqProducer ChannelClose(string exchangeName)
+        public RabbitmqProducer ChannelClose()
         {
 
             _channel.Close();
             return this;
         }
 
-        public RabbitmqProducer ConnectionClose(string exchangeName)
+        public RabbitmqProducer ConnectionClose()
         {
 
             _connection.Close();
